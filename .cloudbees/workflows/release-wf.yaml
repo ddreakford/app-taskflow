@@ -1,7 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: Release WF
-
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +8,6 @@ on:
         type: string
         required: true
         description: System-generated manifest for releases
-
 metadata:
   stages/v1alpha1:
     - name: DEV
@@ -22,7 +20,6 @@ metadata:
     - name: PROD
       jobs:
         - PROD
-
 jobs:
   DEV:
     environment: WS-DEV
@@ -32,7 +29,6 @@ jobs:
     with:
       manifest: ${{ inputs.manifest }}
       environment: ${{ job.environment }}
-
   Approve:
     needs: DEV
     timeout-minutes: 4320
@@ -40,13 +36,10 @@ jobs:
     with:
       disallowLaunchByUser: false
       notifyAllEligibleUsers: false
-      #Intentionally making this blank so you can approve your own for this workshop. 
-      #The approvers field supports both user IDs and email addresses when needed
       approvers: ""
       approvalInputs: |
         Comment:
           type: string
-
   STAGING:
     needs: Approve
     environment: WS-STAGING
@@ -56,7 +49,6 @@ jobs:
     with:
       manifest: ${{ inputs.manifest }}
       environment: ${{ job.environment }}
-
   PROD:
     needs: STAGING
     environment: WS-PROD
